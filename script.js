@@ -42,10 +42,27 @@ const numbers = document.querySelector("#numbers");
 const operators = document.querySelector("#operators");
 const calculateButton = document.querySelector("#calculate");
 const clearButton = document.querySelector("#clear");
+const deleteButton = document.querySelector("#delete")
 
 function roundDecimals(number) {
     number = `${number}`;
-    if (number && !number.endsWith(".")) return `${Math.round(number * 10000000) / 10000000}`;
+    let trailingZeroes = "";
+    if (number.includes(".")) {
+        //For typing zeroes after decimal point
+        let afterDecimal = number.split(".")[1];
+        afterDecimal = afterDecimal.slice(0, 7);
+        numDecimals = afterDecimal.length;
+        let isZero = true;
+        while (isZero) {
+        if (afterDecimal.slice(-1) == "0") {
+            trailingZeroes += afterDecimal.slice(-1);
+            afterDecimal = afterDecimal.slice(0,-1);
+        }
+        else isZero = false;
+        }
+        if (trailingZeroes.length == numDecimals) trailingZeroes = "." + trailingZeroes;
+    }
+    if (number && !number.endsWith(".")) return `${Math.round(number * 10000000) / 10000000}` + trailingZeroes;
     else return number;
 }
 
@@ -127,3 +144,12 @@ calculateButton.addEventListener("click", (e) => {
 });
 
 clearButton.addEventListener("click", (e) => clear());
+
+deleteButton.addEventListener("click", (e) => {
+    if (!expression.isResult) {
+         if (expression.operand2) expression.operand2 = expression.operand2.slice(0, -1);
+        else if (expression.operator) expression.operator = "";
+        else if (expression.operand1) expression.operand1 = expression.operand1.slice(0, -1);
+    }
+    updateDisplay();
+});
