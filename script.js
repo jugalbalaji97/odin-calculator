@@ -94,9 +94,10 @@ operators.addEventListener("click", (e)=>{
 });
 
 calculateButton.addEventListener("click", (e) => {
-    calculate();
-    updateDisplay(isCalculate=true);
-
+    if (expression.operator && expression.operand2) {
+        calculate();
+        updateDisplay(isCalculate=true);
+    }
     e.stopPropagation();
 });
 
