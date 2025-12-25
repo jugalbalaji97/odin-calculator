@@ -33,6 +33,9 @@ let expression = {
 
 let answer = 0;
 
+let primaryDisplayText = "";
+let secondaryDisplayText = "";
+
 const primaryDisplay = document.querySelector("#primary-display");
 const secondaryDisplay = document.querySelector("#secondary-display")
 const numbers = document.querySelector("#numbers");
@@ -40,14 +43,29 @@ const operators = document.querySelector("#operators");
 const calculateButton = document.querySelector("#calculate");
 const clearButton = document.querySelector("#clear");
 
+function roundDecimals(number) {
+    number = `${number}`;
+    if (number && !number.endsWith(".")) return `${Math.round(number * 10000000) / 10000000}`;
+    else return number;
+}
+
+function truncateDisplayText(text, length) {
+    length -= 3;
+    text = text.trim();
+    let truncatedText = (text.length <= length) ? text : "..." + text.slice(text.length - length)
+    return truncatedText;
+}
+
 function updateDisplay(isCalculate=false) {
     if (isCalculate) {
-        secondaryDisplay.textContent = primaryDisplay.textContent;
-        primaryDisplay.textContent = answer;
+        secondaryDisplayText = primaryDisplayText;
+        secondaryDisplay.textContent = truncateDisplayText(secondaryDisplayText, 18);
+        primaryDisplayText = roundDecimals(answer);
     }
     else {
-        primaryDisplay.textContent = expression.operand1 + " " + BUTTON_MAP[expression.operator] + " " + expression.operand2;
+        primaryDisplayText = roundDecimals(expression.operand1) + " " + BUTTON_MAP[expression.operator] + " " + roundDecimals(expression.operand2);
     }
+    primaryDisplay.textContent = truncateDisplayText(primaryDisplayText, 13);
 }
 
 function calculate() {
@@ -69,28 +87,34 @@ function clear() {
 }
 
 numbers.addEventListener("click", (e)=>{
-    if (!expression.operator) {
-        if(expression.isResult){
-            clear();
-            expression.operand1 = BUTTON_MAP[e.target.id];
+    if(expression.isResult && !expression.operator) clear();
+
+    let operand = (!expression.operator) ? "operand1": "operand2";
+
+    if (expression[operand].length <= 9) {
+        if (e.target.id == "decimal") {
+            if (!expression[operand].includes(".")) {
+                if(!expression[operand]) expression[operand] += "0" + BUTTON_MAP[e.target.id];
+                else expression[operand] += BUTTON_MAP[e.target.id];
+            }
         }
-        else expression.operand1 += BUTTON_MAP[e.target.id];
+        else expression[operand] += BUTTON_MAP[e.target.id];
     }
-    else expression.operand2 += BUTTON_MAP[e.target.id];
 
     updateDisplay();
+    e.stopPropagation();
 });
 
 operators.addEventListener("click", (e)=>{
     if (expression.operand1 && !expression.operand2) expression.operator = e.target.id;
     else if (expression.operand1 && expression.operand2) {
-        answer = calculate();
+        calculate();
         updateDisplay(isCalculate=true);
         expression.operator = e.target.id;
-        updateDisplay();
     }
 
     updateDisplay();
+    e.stopPropagation();
 });
 
 calculateButton.addEventListener("click", (e) => {
@@ -98,6 +122,7 @@ calculateButton.addEventListener("click", (e) => {
         calculate();
         updateDisplay(isCalculate=true);
     }
+
     e.stopPropagation();
 });
 
