@@ -41,11 +41,7 @@ const calculateButton = document.querySelector("#calculate");
 function updateDisplay(isCalculate=false) {
     if (isCalculate) {
         secondaryDisplay.textContent = primaryDisplay.textContent;
-        console.log(answer);
         primaryDisplay.textContent = answer;
-        expression.operand1 = `${answer}`;
-        expression.operator = "";
-        expression.operand2 = "";
     }
     else {
         primaryDisplay.textContent = expression.operand1 + " " + BUTTON_MAP[expression.operator] + " " + expression.operand2;
@@ -53,8 +49,11 @@ function updateDisplay(isCalculate=false) {
 }
 
 function calculate() {
-    return OPERATION_MAP[expression.operator](Number
+    answer = OPERATION_MAP[expression.operator](Number
         (expression.operand1), Number(expression.operand2));
+    expression.operand1 = `${answer}`;
+    expression.operator = "";
+    expression.operand2 = "";
 }
 
 numbers.addEventListener("click", (e)=>{
@@ -66,13 +65,20 @@ numbers.addEventListener("click", (e)=>{
 
 operators.addEventListener("click", (e)=>{
     if (expression.operand1 && !expression.operand2) expression.operator = e.target.id;
+    else if (expression.operand1 && expression.operand2) {
+        answer = calculate();
+        updateDisplay(isCalculate=true);
+        expression.operator = e.target.id;
+        updateDisplay();
+    }
 
     updateDisplay();
 })
 
 calculateButton.addEventListener("click", (e) => {
-    answer = calculate();
+    calculate();
     updateDisplay(isCalculate=true);
+
     e.stopPropagation();
 })
 
