@@ -12,11 +12,23 @@ h1 {
 }
 
 #display {
-    height: 100px;
+    /* height: 100px; */
     border-style: solid;
     margin-bottom: 20px;
     flex-shrink: 0;
+    text-align: end;
 }
+
+#secondary-display {
+    height: 40px;
+    font-size: 30px;
+}
+
+#primary-display {
+    height: 60px;
+    font-size: 50px;
+}
+
 
 #buttons {
     display: flex;
@@ -29,7 +41,7 @@ h1 {
     gap: 10px;
 }
 
-#numbers {
+#numbers-and-utils {
     flex-grow: 1;
 }
 
