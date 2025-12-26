@@ -156,15 +156,19 @@ function numberEntry (number) {
 }
 
 numbers.addEventListener("click", (e)=>{
-    e.target.blur(); // unfocus button to avoid accidental trigger on pressing "Enter" key
-    numberEntry(BUTTON_MAP[e.target.id]);
-    e.stopPropagation();
+    if (e.target.id in BUTTON_MAP) {
+        e.target.blur(); // unfocus button to avoid accidental trigger on pressing "Enter" key
+        numberEntry(BUTTON_MAP[e.target.id]);
+        e.stopPropagation();
+    }
 });
 
 operators.addEventListener("click", (e)=>{
-    e.target.blur(); // unfocus button to avoid accidental trigger on pressing "Enter" key
-    operatorEntry(BUTTON_MAP[e.target.id]);
-    e.stopPropagation();
+    if (e.target.id in BUTTON_MAP) {
+        e.target.blur(); // unfocus button to avoid accidental trigger on pressing "Enter" key
+        operatorEntry(BUTTON_MAP[e.target.id]);
+        e.stopPropagation();
+    }
 });
 
 calculateButton.addEventListener("click", (e) => {
