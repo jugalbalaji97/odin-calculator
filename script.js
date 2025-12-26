@@ -81,6 +81,7 @@ function truncateDisplayText(text, length) {
 }
 
 function updateDisplay(isCalculate=false) {
+    // if result was calculated show the result in primary display and the expression in secondary display
     if (isCalculate) {
         secondaryDisplayText = primaryDisplayText;
         secondaryDisplay.textContent = truncateDisplayText(secondaryDisplayText, 18);
@@ -127,7 +128,8 @@ function backspace () {
 }
 
 function operatorEntry (operator) {
-    expression.isResult = false;
+    // if operator is entered after a result, then continue the calculation, it is no longer a result
+    expression.isResult = false; 
     if (expression.operand1 && !expression.operand2) expression.operator = operator;
     else if (expression.operand1 && expression.operand2) {
         calculate();
@@ -138,6 +140,7 @@ function operatorEntry (operator) {
 }
 
 function numberEntry (number) {
+    // if number is entered right after result is calculated, start a new calculation
     if(expression.isResult && !expression.operator) clear();
 
     let operand = (!expression.operator) ? "operand1": "operand2";
